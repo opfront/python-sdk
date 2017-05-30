@@ -47,6 +47,8 @@ class OpfrontClient(object):
         elif resp.status_code == 500:
             raise UnexpectedError()
 
+        # TODO: Handle token expiration & refresh
+
     def do_request(self, url, method, body=None):
         """
         Perform a request to the Opfront API
@@ -74,6 +76,9 @@ class OpfrontClient(object):
 
         elif method == 'DELETE':
             resp = requests.delete(url, headers=self._headers)
+
+        if resp is None:
+            raise ValueError('Invalid HTTP method: {}'.format(method))
 
         OpfrontClient._validate_status_code(resp)
 

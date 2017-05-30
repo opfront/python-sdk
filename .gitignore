@@ -1,2 +1,5 @@
 .idea/*
 *.pyc
+build/*
+dist/*
+opfront.egg-info/*
