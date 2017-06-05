@@ -65,12 +65,14 @@ class OpfrontResource(object):
 
         return Model(self, **body)
 
-    def list(self, page_size=20, **filters):
+    def list(self, page_size=20, offset=0, limit=None, **filters):
         """
         Get a generator that iterates over all instances matching the specified filters
         
         Args:
             page_size (int): Page size to be used while scrolling
+            offset (int): Initial scrolling offset
+            limit (int): Record count after which to stop scrolling
             **filters: Filters to apply to the resource
 
         Returns:
@@ -78,7 +80,6 @@ class OpfrontResource(object):
 
         """
         size = page_size
-        offset = 0
 
         formatted_filters = '&'.join(
             [str(k) + "=" + json.dumps(v) if type(v) == dict else str(v) for k, v in filters.items()]
@@ -89,13 +90,19 @@ class OpfrontResource(object):
             filters=formatted_filters
         )
 
+        yield_count = 0
+
         while True:
             url = url_template.format(size=size, offset=offset)
 
             body = self._client.do_request(url, 'GET')
 
             for hit in body['hits']:
+                yield_count += 1
                 yield Model(self, **hit)
+
+                if limit is not None and yield_count >= limit:
+                    break
 
             offset += size
 
