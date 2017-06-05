@@ -10,7 +10,7 @@ class Model(object):
 
     def __init__(self, resource, **attrs):
         self._res = resource
-        self._existing_keys = dir(self)
+        self._excluded_keys = dir(self)
 
         for attr_name, attr_value in attrs.items():
             setattr(self, attr_name, attr_value)
@@ -37,10 +37,8 @@ class Model(object):
         if hasattr(self, 'id'):
             self._res.delete(self.id)
         else:
-            # TODO: Raise warning here?
-            # Error seems to harsh since deleting a non-existent resource isn't such a big deal
             pass
 
     @property
     def serialized(self):
-        return {k: getattr(self, k) for k in dir(self) if k not in self._existing_keys and not k.startswith('_')}
+        return {k: getattr(self, k) for k in dir(self) if k not in self._excluded_keys and not k.startswith('_')}
