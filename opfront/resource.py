@@ -1,6 +1,8 @@
 from opfront.exceptions import ResourceNotFoundError
 from opfront.model import Model
 
+import json
+
 
 class OpfrontResource(object):
 
@@ -78,7 +80,9 @@ class OpfrontResource(object):
         size = page_size
         offset = 0
 
-        formatted_filters = '&'.join([str(k) + "=" + str(v) for k, v in filters.items()])
+        formatted_filters = '&'.join(
+            [str(k) + "=" + json.dumps(v) if type(v) == dict else str(v) for k, v in filters.items()]
+        )
 
         url_template = '{endpoint}?size={{size}}&offset={{offset}}&{filters}'.format(
             endpoint=self._endpoint,
@@ -111,7 +115,6 @@ class OpfrontResource(object):
         """
         body = self._client.do_request(self._endpoint, 'POST', body=res.serialized)
 
-        # TODO: Some magic to replace existing instances with server-updated instances?
         return Model(self, **body)
 
     def update(self, res):
@@ -128,7 +131,6 @@ class OpfrontResource(object):
         res_url = '{endpoint}/{id}'.format(endpoint=self._endpoint, id=res.id)
         body = self._client.do_request(res_url, 'PUT', body=res.serialized)
 
-        # TODO: Some magic to replace existing instances with server-updated instances?
         return Model(self, **body)
 
     def delete(self, res_id):
