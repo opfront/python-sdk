@@ -4,14 +4,14 @@ import requests
 
 
 # TODO: Change to prod url
-BASE_API_URL = "http://opfront-staging.ca-central-1.elasticbeanstalk.com"
+BASE_API_URL = "https://staging.opfront.ca"
 
 
 class OpfrontClient(object):
 
     """
     OpfrontClient manages the login credentials as well as the token refresh flow
-    
+
     Args:
         email (str): Email address with which to login
         password (str): Password associated with the email
@@ -52,7 +52,7 @@ class OpfrontClient(object):
     def do_request(self, url, method, body=None):
         """
         Perform a request to the Opfront API
-        
+
         Args:
             url: Endpoint to query
             method: HTTP method
