@@ -8,7 +8,7 @@ class OpfrontResource(object):
 
     """
     OpfrontResource represents an entire resource of the Opfront API (Ex: All stores)
-    
+
     Args:
         endpoint (str): Endpoint that maps to the resource
         client (OpfrontClient): Authenticated opfront client
@@ -33,7 +33,7 @@ class OpfrontResource(object):
     def exists(self, res_id):
         """
         Checks if a resource instance exists
-        
+
         Args:
             res_id: ID of the resource
 
@@ -52,7 +52,7 @@ class OpfrontResource(object):
     def get(self, res_id):
         """
         Get a resource instance from ID
-        
+
         Args:
             res_id: ID of the resource
 
@@ -68,7 +68,7 @@ class OpfrontResource(object):
     def list(self, page_size=20, offset=0, limit=None, **filters):
         """
         Get a generator that iterates over all instances matching the specified filters
-        
+
         Args:
             page_size (int): Page size to be used while scrolling
             offset (int): Initial scrolling offset
@@ -82,7 +82,7 @@ class OpfrontResource(object):
         size = page_size
 
         formatted_filters = '&'.join(
-            [str(k) + "=" + json.dumps(v) if type(v) == dict else str(v) for k, v in filters.items()]
+            [str(k) + "=" + json.dumps(v) if type(v) == dict else str(k) + '=' + str(v) for k, v in filters.items()]
         )
 
         url_template = '{endpoint}?size={{size}}&offset={{offset}}&{filters}'.format(
@@ -112,7 +112,7 @@ class OpfrontResource(object):
     def create(self, res):
         """
         Create a resource instance
-        
+
         Args:
             res (Model): Resource instance
 
@@ -127,7 +127,7 @@ class OpfrontResource(object):
     def update(self, res):
         """
         Update a resource instance
-        
+
         Args:
             res (Model): Resource instance
 
@@ -143,7 +143,7 @@ class OpfrontResource(object):
     def delete(self, res_id):
         """
         Delete a resource instance by ID
-        
+
         Args:
             res_id: ID of the resource to delete
         """
