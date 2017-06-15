@@ -29,8 +29,7 @@ class OpfrontClient(object):
 
     @property
     def _headers(self):
-        headers = {'Content-Type': 'application/json'}
-
+        headers = {}
         if self._token:
             headers['X-Auth-Token'] = self._token
 
@@ -69,10 +68,10 @@ class OpfrontClient(object):
             resp = requests.get(url, headers=self._headers)
 
         elif method == 'POST':
-            resp = requests.post(url, json=body, headers=self._headers)
+            resp = requests.post(url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
 
         elif method == 'PUT':
-            resp = requests.put(url, json=body, headers=self._headers)
+            resp = requests.put(url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
 
         elif method == 'DELETE':
             resp = requests.delete(url, headers=self._headers)
