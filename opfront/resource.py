@@ -18,6 +18,9 @@ class OpfrontResource(object):
         self._endpoint = endpoint
         self._client = client
 
+    def _make_model(self, **kwargs):
+        return Model(self, **kwargs)
+
     def __call__(self, **kwargs):
         """
         Create a new model instance
@@ -28,7 +31,7 @@ class OpfrontResource(object):
             Model: Model instance
 
         """
-        return Model(self, **kwargs)
+        return self._make_model(**kwargs)
 
     def exists(self, res_id):
         """
@@ -63,7 +66,7 @@ class OpfrontResource(object):
         res_url = '{endpoint}/{id}'.format(endpoint=self._endpoint, id=res_id)
         body = self._client.do_request(res_url, 'GET')
 
-        return Model(self, **body)
+        return self._make_model(**body)
 
     def list(self, page_size=20, offset=0, limit=None, **filters):
         """
@@ -99,7 +102,7 @@ class OpfrontResource(object):
 
             for hit in body['hits']:
                 yield_count += 1
-                yield Model(self, **hit)
+                yield self._make_model(**hit)
 
                 if limit is not None and yield_count >= limit:
                     break
@@ -122,7 +125,7 @@ class OpfrontResource(object):
         """
         body = self._client.do_request(self._endpoint, 'POST', body=res.serialized)
 
-        return Model(self, **body)
+        return self._make_model(**body)
 
     def update(self, res):
         """
@@ -138,7 +141,7 @@ class OpfrontResource(object):
         res_url = '{endpoint}/{id}'.format(endpoint=self._endpoint, id=res.id)
         body = self._client.do_request(res_url, 'PUT', body=res.serialized)
 
-        return Model(self, **body)
+        return self._make_model(**body)
 
     def delete(self, res_id):
         """

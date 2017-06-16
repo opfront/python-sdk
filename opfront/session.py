@@ -1,4 +1,6 @@
 from opfront.client import OpfrontClient
+from opfront.order import OrderResource
+from opfront.product import ProductResource
 from opfront.resource import OpfrontResource
 
 
@@ -7,7 +9,7 @@ class OpfrontSession(object):
     """
     OpfrontSession defines the set of resources available from the Opfront API.
     Can be used as a standard object as and as a context manager.
-    
+
     Args:
         email (str): Email with which to login
         password (str): Password associated with the email
@@ -19,8 +21,8 @@ class OpfrontSession(object):
         # Resource definition
         self.spectacle = OpfrontResource('/spectacles', client)
         self.store = OpfrontResource('/stores', client)
-        self.product = OpfrontResource('/products', client)
-        self.order = OpfrontResource('/orders', client)
+        self.product = ProductResource('/products', client)
+        self.order = OrderResource('/orders', client)
 
         # TODO: Test this once the user resource is accessible by admin users
         self.user = OpfrontResource('/users', client)

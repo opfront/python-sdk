@@ -2,7 +2,7 @@ class Model(object):
 
     """
     Model represents a single resource instance (Ex: a specific Store)
-    
+
     Args:
         resource (OpfrontResource): Resource that instantiated this model
         **attrs (dict): Attributes of the model
@@ -18,7 +18,7 @@ class Model(object):
     def save(self):
         """
         Creates or updates the model
-        
+
         Returns:
             Model: Updated model (with generated ID, if applicable)
 
@@ -41,4 +41,21 @@ class Model(object):
 
     @property
     def serialized(self):
-        return {k: getattr(self, k) for k in dir(self) if k not in self._excluded_keys and not k.startswith('_')}
+        serialized_dict = {}
+
+        for k in dir(self):
+            if k in self._excluded_keys or k.startswith('_'):
+                continue
+
+            val = getattr(self, k)
+            if isinstance(val, Model):
+                k = k + '_id'
+                val = val.id
+
+            elif isinstance(val, list) and all([isinstance(x, Model) for x in val]):
+                k = k.rstrip('s') + '_ids'
+                val = [x.id for x in val]
+
+            serialized_dict[k] = val
+
+        return serialized_dict
