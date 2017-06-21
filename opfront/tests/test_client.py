@@ -1,5 +1,5 @@
 from opfront.client import OpfrontClient
-from opfront.exceptions import BadRequestError, ResourceNotFoundError, UnexpectedError
+from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFoundError, UnexpectedError
 
 from unittest.mock import MagicMock, patch
 
@@ -117,6 +117,12 @@ class TestClientDoRequest(unittest.TestCase):
         mock_post = MagicMock(return_value=Response(status_code=400))
         with patch('opfront.client.requests.post', mock_post):
             with self.assertRaises(BadRequestError):
+                self.client.do_request(URL, 'POST')
+
+    def test_client_do_request_raises_integrity_error_on_422(self):
+        mock_post = MagicMock(return_value=Response(status_code=422))
+        with patch('opfront.client.requests.post', mock_post):
+            with self.assertRaises(IntegrityError):
                 self.client.do_request(URL, 'POST')
 
     def test_client_do_request_raises_unexpected_error_on_500(self):

@@ -10,7 +10,7 @@ ATTRIBUTE_SET = {
     'hello': 'world',
     'order': 66,
     'test': True,
-    'and then there were': None
+    'and then there were': None,
 }
 
 ID_ATTRIBUTE_SET = {
@@ -51,6 +51,41 @@ class TestModel(unittest.TestCase):
 
         for k, v in serialized.items():
             self.assertEqual(ATTRIBUTE_SET.get(k), v)
+
+    def test_model_serialized_replaces_submodels_by_model_ids(self):
+
+        full_key = 'nested_model'
+        id_key = full_key + '_id'
+
+        nested_attrs = {
+            **ATTRIBUTE_SET,
+            full_key: Model(MagicMock(), **{'id': 'world'})
+        }
+
+        m = Model(MagicMock(), **nested_attrs)
+        serialized = m.serialized
+        self.assertNotIn(full_key, serialized)
+        self.assertIn(id_key, serialized)
+        self.assertEqual(serialized[id_key], nested_attrs[full_key].id)
+
+    def test_model_serialized_replaces_list_of_submodels_by_list_of_model_ids(self):
+        full_key = 'nested_models'
+        id_key = 'nested_model_ids'
+
+        nested_attrs = {
+            **ATTRIBUTE_SET,
+            full_key: [
+                Model(MagicMock(), **{'id': 'hello'}),
+                Model(MagicMock(), **{'id': 'world'})
+            ]
+        }
+
+        model = Model(MagicMock(), **nested_attrs)
+        serialized = model.serialized
+
+        self.assertNotIn(full_key, serialized)
+        self.assertIn(id_key, serialized)
+        self.assertEqual(serialized[id_key], [m.id for m in nested_attrs[full_key]])
 
 
 class TestModelSave(unittest.TestCase):
