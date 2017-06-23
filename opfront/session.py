@@ -23,8 +23,6 @@ class OpfrontSession(object):
         self.store = OpfrontResource('/stores', client)
         self.product = ProductResource('/products', client)
         self.order = OrderResource('/orders', client)
-
-        # TODO: Test this once the user resource is accessible by admin users
         self.user = OpfrontResource('/users', client)
 
     def __enter__(self):
