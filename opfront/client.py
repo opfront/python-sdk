@@ -17,13 +17,12 @@ class OpfrontClient(object):
 
         self._token = None
         self._refresh = None
+        self._api_url = api_url
 
         data = self.do_request('/auth/login', 'POST', body={'email': email, 'password': password})
 
         self._token = data['auth_token']
         self._refresh = data['refresh_token']
-
-        self._api_url = api_url
 
     @property
     def _headers(self):
