@@ -3,10 +3,6 @@ from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFound
 import requests
 
 
-# TODO: Change to prod url
-BASE_API_URL = "https://staging.opfront.ca"
-
-
 class OpfrontClient(object):
 
     """
@@ -17,7 +13,7 @@ class OpfrontClient(object):
         password (str): Password associated with the email
     """
 
-    def __init__(self, email, password):
+    def __init__(self, email, password, api_url="https://api.opfront.ca"):
 
         self._token = None
         self._refresh = None
@@ -26,6 +22,8 @@ class OpfrontClient(object):
 
         self._token = data['auth_token']
         self._refresh = data['refresh_token']
+
+        self._api_url = api_url
 
     @property
     def _headers(self):
@@ -65,7 +63,7 @@ class OpfrontClient(object):
 
         """
         resp = None
-        url = BASE_API_URL + url
+        url = self._api_url + url
 
         if method == 'GET':
             resp = requests.get(url, headers=self._headers)
