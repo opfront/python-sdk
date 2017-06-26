@@ -16,8 +16,8 @@ class OpfrontSession(object):
         password (str): Password associated with the email
     """
 
-    def __init__(self, email, password, api_url='https://api.opfront.ca'):
-        client = OpfrontClient(email, password, api_url=api_url)
+    def __init__(self, email, password, **kwargs):
+        client = OpfrontClient(email, password, **kwargs)
 
         # Resource definition
         self.spectacle = OpfrontResource('/spectacles', client)

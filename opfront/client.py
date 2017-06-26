@@ -13,7 +13,7 @@ class OpfrontClient(object):
         password (str): Password associated with the email
     """
 
-    def __init__(self, email, password, api_url):
+    def __init__(self, email, password, api_url='https://api.opfront.ca'):
 
         self._token = None
         self._refresh = None
