@@ -1,10 +1,6 @@
-from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFoundError, UnexpectedError
+from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFoundError, UnauthorizedError, UnexpectedError
 
 import requests
-
-
-# TODO: Change to prod url
-BASE_API_URL = "https://staging.opfront.ca"
 
 
 class OpfrontClient(object):
@@ -17,10 +13,11 @@ class OpfrontClient(object):
         password (str): Password associated with the email
     """
 
-    def __init__(self, email, password):
+    def __init__(self, email, password, api_url='https://api.opfront.ca'):
 
         self._token = None
         self._refresh = None
+        self._api_url = api_url
 
         data = self.do_request('/auth/login', 'POST', body={'email': email, 'password': password})
 
@@ -49,7 +46,13 @@ class OpfrontClient(object):
         elif resp.status_code == 500:
             raise UnexpectedError()
 
-        # TODO: Handle token expiration & refresh
+    def _try_refresh(self):
+        if self._token is None or self._refresh is None:
+            raise UnauthorizedError
+
+        self._token = None
+        data = self.do_request('/auth/refresh', 'POST', body={'refresh_token': self._refresh})
+        self._token = data['auth_token']
 
     def do_request(self, url, method, body=None):
         """
@@ -65,24 +68,28 @@ class OpfrontClient(object):
 
         """
         resp = None
-        url = BASE_API_URL + url
+        request_url = self._api_url + url
 
         if method == 'GET':
-            resp = requests.get(url, headers=self._headers)
+            resp = requests.get(request_url, headers=self._headers)
 
         elif method == 'POST':
-            resp = requests.post(url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
+            resp = requests.post(request_url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
 
         elif method == 'PUT':
-            resp = requests.put(url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
+            resp = requests.put(request_url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
 
         elif method == 'DELETE':
-            resp = requests.delete(url, headers=self._headers)
+            resp = requests.delete(request_url, headers=self._headers)
 
         if resp is None:
             raise ValueError('Invalid HTTP method: {}'.format(method))
 
         OpfrontClient._validate_status_code(resp)
+
+        if resp.status_code == 401 or resp.status_code == 403:
+            self._try_refresh()
+            self.do_request(url, method, body)
 
         if resp.status_code == 204:
             return None

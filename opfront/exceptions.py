@@ -6,6 +6,10 @@ class BadRequestError(Exception):
     pass
 
 
+class UnauthorizedError(Exception):
+    pass
+
+
 class IntegrityError(Exception):
     pass
 
