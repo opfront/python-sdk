@@ -1,4 +1,4 @@
-from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFoundError, UnauthorizedError, UnexpectedError
+from opfront.exceptions import BadRequestError, ForbiddenError, IntegrityError, ResourceNotFoundError, UnauthorizedError, UnexpectedError
 
 import requests
 
@@ -42,6 +42,9 @@ class OpfrontClient(object):
 
         elif resp.status_code == 422:
             raise IntegrityError()
+
+        elif resp.status_code == 403:
+            raise ForbiddenError()
 
         elif resp.status_code == 500:
             raise UnexpectedError()
