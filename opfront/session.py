@@ -20,6 +20,7 @@ class OpfrontSession(object):
         client = OpfrontClient(email, password, **kwargs)
 
         # Resource definition
+        self.banner = OpfrontResource('/banners', client)
         self.spectacle = OpfrontResource('/spectacles', client)
         self.store = OpfrontResource('/stores', client)
         self.product = ProductResource('/products', client)
