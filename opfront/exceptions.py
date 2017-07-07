@@ -18,5 +18,9 @@ class IntegrityError(Exception):
     pass
 
 
+class ConflictError(Exception):
+    pass
+
+
 class UnexpectedError(Exception):
     pass
