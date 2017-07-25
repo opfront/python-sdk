@@ -80,10 +80,10 @@ class TestClientDoRequest(unittest.TestCase):
         self.assertTrue(mock_post.called)
         self.assertTrue(mock_post.call_count, 1)
 
-    def test_client_do_request_calls_put_when_put_request(self):
+    def test_client_do_request_calls_patch_when_patch_request(self):
         mock_put = MagicMock(return_value=Response(SOME_BODY))
-        with patch('opfront.client.requests.put', mock_put):
-            self.client.do_request(URL, 'PUT')
+        with patch('opfront.client.requests.patch', mock_put):
+            self.client.do_request(URL, 'PATCH')
 
         self.assertTrue(mock_put.called)
         self.assertEqual(mock_put.call_count, 1)

@@ -139,7 +139,7 @@ class OpfrontResource(object):
 
         """
         res_url = '{endpoint}/{id}'.format(endpoint=self._endpoint, id=res.id)
-        body = self._client.do_request(res_url, 'PUT', body=res.serialized)
+        body = self._client.do_request(res_url, 'PATCH', body=res.serialized)
 
         return self._make_model(**body)
 
