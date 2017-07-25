@@ -1,5 +1,5 @@
 from opfront.client import OpfrontClient
-from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFoundError, UnexpectedError
+from opfront.exceptions import BadRequestError, IntegrityError, ResourceNotFoundError, UnexpectedError, ForbiddenError
 
 from unittest.mock import MagicMock, patch
 
@@ -130,3 +130,8 @@ class TestClientDoRequest(unittest.TestCase):
         with patch('opfront.client.requests.get', mock_get):
             with self.assertRaises(UnexpectedError):
                 self.client.do_request(URL, 'GET')
+
+    def test_client_do_request_raises_forbidden_on_403(self):
+        mock_get = MagicMock(return_value=Response(status_code=403))
+        with patch('opfront.client.requests.get', mock_get), self.assertRaises(ForbiddenError):
+            self.client.do_request(URL, 'GET')
