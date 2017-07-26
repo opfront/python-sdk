@@ -82,8 +82,8 @@ class OpfrontClient(object):
         elif method == 'POST':
             resp = requests.post(request_url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
 
-        elif method == 'PUT':
-            resp = requests.put(request_url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
+        elif method == 'PATCH':
+            resp = requests.patch(request_url, json=body, headers={**self._headers, 'Content-Type': 'application/json'})
 
         elif method == 'DELETE':
             resp = requests.delete(request_url, headers=self._headers)

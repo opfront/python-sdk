@@ -211,7 +211,7 @@ class TestResourceUpdate(unittest.TestCase):
 
         res.update(Model(res, **ATTRIBUTE_SET))
 
-        self.assertEqual(client.do_request.call_args[0][1], 'PUT')
+        self.assertEqual(client.do_request.call_args[0][1], 'PATCH')
 
     def test_resource_update_appends_id_to_url(self):
         client = MockClient(response=ATTRIBUTE_SET)

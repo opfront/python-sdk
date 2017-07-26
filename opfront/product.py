@@ -6,7 +6,7 @@ class ProductResource(OpfrontResource):
 
     def _make_model(self, **args):
         model = super()._make_model(**args)
-        if getattr(model, 'spectacle', None):
+        if getattr(model, 'spectacle', None) is not None:
             model.spectacle = Model(OpfrontResource('/spectacles', self._client), **model.spectacle)
 
         return model
