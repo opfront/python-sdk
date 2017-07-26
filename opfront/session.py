@@ -2,6 +2,7 @@ from opfront.client import OpfrontClient
 from opfront.order import OrderResource
 from opfront.product import ProductResource
 from opfront.resource import OpfrontResource
+from opfront.store import StoreResource
 from opfront.user import UserResource
 
 
@@ -22,7 +23,7 @@ class OpfrontSession(object):
         # Resource definition
         self.banner = OpfrontResource('/banners', client)
         self.spectacle = OpfrontResource('/spectacles', client)
-        self.store = OpfrontResource('/stores', client)
+        self.store = StoreResource('/stores', client)
         self.product = ProductResource('/products', client)
         self.order = OrderResource('/orders', client)
         self.user = UserResource('/users', client)
