@@ -20,6 +20,6 @@ setup(
     description='Python SDK for the Opfront REST API',
     long_description=readme,
     install_requires=[
-        "requests==2.17.3"
+        "requests==2.20.0"
     ]
 )
